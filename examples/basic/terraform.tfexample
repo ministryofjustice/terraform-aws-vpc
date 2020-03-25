@@ -1,0 +1,13 @@
+subnets = {
+  public-1a  = { cidr = "10.0.0.0/24", az = "eu-north-1a", rt = "public" },
+  public-1b  = { cidr = "10.0.1.0/24", az = "eu-north-1b", rt = "public" },
+  private-1a = { cidr = "10.0.8.0/24", az = "eu-north-1a", rt = "tgw" },
+  private-1b = { cidr = "10.0.99.0/24", az = "eu-north-1b", rt = "private" }
+  tgw-1a     = { cidr = "10.0.18.0/24", az = "eu-north-1a", rt = "tgw" },
+  tgw-1b     = { cidr = "10.0.19.0/24", az = "eu-north-1b", rt = "tgw" },
+  mgmt-1a    = { cidr = "10.0.10.0/24", az = "eu-north-1a", rt = "mgmt" },
+  mgmt-1b    = { cidr = "10.0.11.0/24", az = "eu-north-1b", rt = "mgmt" },
+}
+region     = "eu-north-1"
+public_rts = ["public"]
+cidr_block = "10.0.0.0/16"
