@@ -9,7 +9,7 @@ provider "aws" {
 }
 
 module "vpc" {
-  source     = "../../"
+  source     = "git::https://gitlab.com/public-tf-modules/terraform-aws-vpc?ref=v0.1.0"
   subnets = {
     public-1a  = { cidr = "10.0.0.0/24", az = "eu-north-1a", route_table = "public" },
     public-1b  = { cidr = "10.0.1.0/24", az = "eu-north-1b", route_table = "public" },
