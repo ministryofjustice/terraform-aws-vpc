@@ -1,3 +1,10 @@
+variable "vpc_name" {
+  description = "name of the vpc"
+  type        = string
+  default     = ""
+}
+
+
 variable "subnets" {
   description = "Map of subnets to create in the vpc."
   type        = map(any)

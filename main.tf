@@ -1,7 +1,7 @@
 ### Create VPC resources
 resource "aws_vpc" "this" {
   cidr_block = var.cidr_block
-  tags       = merge(var.tags, var.vpc_tags)
+  tags       = merge(var.tags, var.vpc_tags, { Name = var.vpc_name })
 }
 
 resource "aws_subnet" "this" {

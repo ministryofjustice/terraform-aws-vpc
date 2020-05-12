@@ -1,6 +1,4 @@
-## Tom's VPC Module
-### Overview
-My personal module for creating a vpc with some subnets. Use if you'd like.
+## VPC Module
 
 ### Usage
 ```
