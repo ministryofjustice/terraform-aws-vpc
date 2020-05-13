@@ -4,6 +4,12 @@ variable "vpc_name" {
   default     = ""
 }
 
+variable "igw_name" {
+  description = "name of the igw"
+  type        = string
+  default     = ""
+}
+
 
 variable "subnets" {
   description = "Map of subnets to create in the vpc."
@@ -34,4 +40,6 @@ variable "tags" {
   default     = {}
 }
 
-
+variable "security_groups" {
+  description = "Map of security groups to create"
+}

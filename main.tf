@@ -30,7 +30,7 @@ resource "aws_route_table_association" "this" {
 resource "aws_internet_gateway" "this" {
   count  = length(var.public_rts) > 0 ? 1 : 0
   vpc_id = aws_vpc.this.id
-  tags   = merge(var.tags, var.vpc_tags)
+  merge(var.tags, var.vpc_tags, { Name = var.igw_name })
 }
 
 resource "aws_route" "public" {
@@ -38,4 +38,44 @@ resource "aws_route" "public" {
   route_table_id         = aws_route_table.this[each.key].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.this[0].id
+}
+
+resource "aws_security_group" "mgmt_security_group" {
+  for_each    = var.security_groups
+  name        = each.key
+  vpc_id      = aws_vpc.this.id
+
+  dynamic "ingress" {
+    for_each = [ 
+      for rule in each.value: 
+      rule 
+      if rule.type == "ingress"
+    ]
+
+    content {
+      from_port   = ingress.value.from_port
+      to_port     = ingress.value.to_port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
+      description = lookup(ingress.value, "description", "")
+    }
+  }
+
+  dynamic "egress" {
+    for_each = [ 
+      for rule in each.value: 
+      rule 
+      if rule.type == "egress"
+    ]
+
+    content {
+      from_port   = egress.value.from_port
+      to_port     = egress.value.to_port
+      protocol    = egress.value.protocol
+      cidr_blocks = egress.value.cidr_blocks
+      description = lookup(egress.value, "description", "")
+    }
+  }
+
+  merge(var.tags, var.vpc_tags, { Name = each.key })
 }

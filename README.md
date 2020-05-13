@@ -8,6 +8,7 @@ provider "aws" {
 
 module "vpc" {
   source     = "git::https://gitlab.com/public-tf-modules/terraform-aws-vpc?ref=v0.1.0"
+  vpc_name   = "example"
   subnets = {
     public-1a  = { cidr = "10.0.0.0/24", az = "eu-north-1a", route_table = "public" },
     public-1b  = { cidr = "10.0.1.0/24", az = "eu-north-1b", route_table = "public" },
@@ -18,7 +19,6 @@ module "vpc" {
     mgmt-1a    = { cidr = "10.0.10.0/24", az = "eu-north-1a", route_table = "mgmt" },
     mgmt-1b    = { cidr = "10.0.11.0/24", az = "eu-north-1b", route_table = "mgmt" },
   }
-  region     = "eu-north-1"
   public_rts = ["public"]
   cidr_block = "10.0.0.0/16"
 }
