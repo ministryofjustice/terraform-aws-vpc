@@ -19,6 +19,14 @@ module "vpc" {
     mgmt-1a    = { cidr = "10.0.10.0/24", az = "eu-north-1a", route_table = "mgmt" },
     mgmt-1b    = { cidr = "10.0.11.0/24", az = "eu-north-1b", route_table = "mgmt" },
   }
+  security_groups = {
+    Public = [
+      { description = "https", protocol = "TCP", from_port = 443, to_port = 443, cidr_blocks = ["137.83.198.1/32"], type = "ingress" },
+      { description = "ssh", protocol = "TCP", from_port = 22, to_port = 22, cidr_blocks = ["137.83.198.1/32"], type = "ingress" },
+      { description = "esp", protocol = "UDP", from_port = 4501, to_port = 4501, cidr_blocks = ["10.0.0.0/16"], type = "ingress" },
+      { description = "allow-all", protocol = -1, from_port = 0, to_port = 0, cidr_blocks = ["0.0.0.0/0"], type = "egress" }
+    ]
+  }
   public_rts = ["public"]
   cidr_block = "10.0.0.0/16"
 }
