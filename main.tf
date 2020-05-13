@@ -30,7 +30,7 @@ resource "aws_route_table_association" "this" {
 resource "aws_internet_gateway" "this" {
   count  = length(var.public_rts) > 0 ? 1 : 0
   vpc_id = aws_vpc.this.id
-  merge(var.tags, var.vpc_tags, { Name = var.igw_name })
+  tags   = merge(var.tags, var.vpc_tags, { Name = var.igw_name })
 }
 
 resource "aws_route" "public" {
@@ -41,14 +41,14 @@ resource "aws_route" "public" {
 }
 
 resource "aws_security_group" "mgmt_security_group" {
-  for_each    = var.security_groups
-  name        = each.key
-  vpc_id      = aws_vpc.this.id
+  for_each = var.security_groups
+  name     = each.key
+  vpc_id   = aws_vpc.this.id
 
   dynamic "ingress" {
-    for_each = [ 
-      for rule in each.value: 
-      rule 
+    for_each = [
+      for rule in each.value :
+      rule
       if rule.type == "ingress"
     ]
 
@@ -62,9 +62,9 @@ resource "aws_security_group" "mgmt_security_group" {
   }
 
   dynamic "egress" {
-    for_each = [ 
-      for rule in each.value: 
-      rule 
+    for_each = [
+      for rule in each.value :
+      rule
       if rule.type == "egress"
     ]
 
@@ -77,5 +77,5 @@ resource "aws_security_group" "mgmt_security_group" {
     }
   }
 
-  merge(var.tags, var.vpc_tags, { Name = each.key })
+  tags = merge(var.tags, var.vpc_tags, { Name = each.key })
 }
