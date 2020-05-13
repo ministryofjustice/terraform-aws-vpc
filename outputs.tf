@@ -14,5 +14,6 @@ output "route_tables" {
 }
 
 output "security_groups" {
-  value = { for sg in aws_security_group.sg : sg.name => sg.id }
+  description = "Security group attributes"
+  value       = aws_security_group.this
 }
