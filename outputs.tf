@@ -13,3 +13,6 @@ output "route_tables" {
   value       = aws_route_table.this
 }
 
+output "security_groups" {
+  value = { for sg in aws_security_group.sg : sg.name => sg.id }
+}

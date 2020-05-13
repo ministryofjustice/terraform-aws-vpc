@@ -40,7 +40,7 @@ resource "aws_route" "public" {
   gateway_id             = aws_internet_gateway.this[0].id
 }
 
-resource "aws_security_group" "mgmt_security_group" {
+resource "aws_security_group" "sg" {
   for_each = var.security_groups
   name     = each.key
   vpc_id   = aws_vpc.this.id
