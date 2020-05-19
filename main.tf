@@ -58,7 +58,7 @@ resource "aws_internet_gateway" "this" {
 
 # Target type - igw
 resource "aws_route" "igw_rt" {
-  for_each               = { for key, r in local.routes : "${r.rtb}-${key}" => r if r.target == "igw" }
+  for_each               = { for r in local.routes : "${r.rtb}-${r.destination_cidr}" => r if r.target == "igw" }
   route_table_id         = aws_route_table.this[each.value.rtb].id
   destination_cidr_block = each.value.destination_cidr
   gateway_id             = aws_internet_gateway.this[0].id
