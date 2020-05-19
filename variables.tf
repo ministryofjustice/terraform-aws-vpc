@@ -53,6 +53,5 @@ variable "security_groups" {
 
 variable "tgw_vpc_attachment" {
   description = "Map of TGW VPC attachement parameters"
-  type        = map(any)
   default     = {}
 }
