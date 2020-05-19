@@ -114,3 +114,14 @@ resource "aws_security_group" "this" {
   tags = merge(var.tags, var.vpc_tags, { Name = each.key })
 }
 
+resource "aws_ec2_transit_gateway_route_table_association" "this" {
+  count                          = lookup(var.tgw_vpc_attachment, "association_rtb", null) != null ? 1 : 0
+  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.this[0].id
+  transit_gateway_route_table_id = var.tgw_vpc_attachment.association_rtb
+}
+
+resource "aws_ec2_transit_gateway_route_table_propagation" "this" {
+  count                          = lookup(var.tgw_vpc_attachment, "propagation_rtb", null) != null ? 1 : 0
+  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.this[0].id
+  transit_gateway_route_table_id = var.tgw_vpc_attachment.propagation_rtb
+}
