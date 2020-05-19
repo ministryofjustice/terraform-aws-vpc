@@ -1,3 +1,13 @@
+locals {
+  routes = flatten([
+    for rtb, rts in var.route_tables : [
+      for rt in rts : [
+        merge(rt, { "rtb" = rtb })
+      ]
+    ]
+  ])
+}
+
 ### Create VPC resources
 resource "aws_vpc" "this" {
   cidr_block = var.cidr_block
@@ -25,19 +35,43 @@ resource "aws_route_table_association" "this" {
   route_table_id = aws_route_table.this[each.value.route_table].id
 }
 
+# TGW VPC attachment
+resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
+  count              = lookup(var.tgw_vpc_attachment, "tgw_id", null) != null ? 1 : 0
+  vpc_id             = aws_vpc.this.id
+  subnet_ids         = [for subnet in var.tgw_vpc_attachment : aws_subnet.this[subnet].id]
+  transit_gateway_id = var.tgw_vpc_attachment.tgw_id
 
-#### Easy mode for public subnets  #### 
+  transit_gateway_default_route_table_association = false
+  transit_gateway_default_route_table_propagation = false
+
+  tags = merge(var.tags, { Name = var.vpc_name })
+}
+
+
+#### Configure IGW if igw_name is specified  #### 
 resource "aws_internet_gateway" "this" {
-  count  = length(var.public_rts) > 0 ? 1 : 0
+  count  = var.igw_name != "" ? 1 : 0
   vpc_id = aws_vpc.this.id
   tags   = merge(var.tags, var.vpc_tags, { Name = var.igw_name })
 }
 
-resource "aws_route" "public" {
-  for_each               = toset(var.public_rts)
-  route_table_id         = aws_route_table.this[each.key].id
-  destination_cidr_block = "0.0.0.0/0"
+# Target type - igw
+resource "aws_route" "igw_rt" {
+  for_each               = { for key, r in local.routes : "${r.rtb}-${key}" => r if r.target == "igw" }
+  route_table_id         = aws_route_table.this[each.value.rtb].id
+  destination_cidr_block = each.value.destination_cidr
   gateway_id             = aws_internet_gateway.this[0].id
+}
+
+# Target type - tgw
+resource "aws_route" "tgw_rt" {
+  for_each               = { for key, r in local.routes : "${r.rtb}-${key}" => r if r.target == "tgw" }
+  route_table_id         = aws_route_table.this[each.value.rtb].id
+  destination_cidr_block = each.value.destination_cidr
+  gateway_id             = var.tgw_vpc_attachment.tgw_id
+
+  depends_on = [aws_ec2_transit_gateway_vpc_attachment.this]
 }
 
 resource "aws_security_group" "this" {
@@ -79,3 +113,4 @@ resource "aws_security_group" "this" {
 
   tags = merge(var.tags, var.vpc_tags, { Name = each.key })
 }
+

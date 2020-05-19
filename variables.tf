@@ -16,11 +16,18 @@ variable "subnets" {
   type        = map(any)
 }
 
-variable "public_rts" {
-  description = "list of public route tables by name"
-  type        = list(string)
-  default     = []
+# variable "public_rts" {
+#   description = "list of public route tables by name"
+#   type        = list(string)
+#   default     = []
+# }
+
+variable "route_tables" {
+  description = "map of routes to create in the vpc"
+  type        = map(any)
+  default     = {}
 }
+
 
 variable "cidr_block" {
   description = "cidr block for the vpc"
@@ -42,4 +49,10 @@ variable "tags" {
 
 variable "security_groups" {
   description = "Map of security groups to create"
+}
+
+variable "tgw_vpc_attachment" {
+  description = "Map of TGW VPC attachement parameters"
+  type        = map(any)
+  default     = {}
 }
