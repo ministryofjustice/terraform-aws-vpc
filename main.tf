@@ -69,7 +69,7 @@ resource "aws_route" "tgw_rt" {
   for_each               = { for r in local.routes : "${r.rtb}-${r.destination_cidr}" => r if r.target == "tgw" }
   route_table_id         = aws_route_table.this[each.value.rtb].id
   destination_cidr_block = each.value.destination_cidr
-  gateway_id             = var.tgw_vpc_attachment.tgw_id
+  transit_gateway_id     = var.tgw_vpc_attachment.tgw_id
 
   depends_on = [aws_ec2_transit_gateway_vpc_attachment.this]
 }
