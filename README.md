@@ -9,26 +9,47 @@ provider "aws" {
 module "vpc" {
   source     = "git::https://gitlab.com/public-tf-modules/terraform-aws-vpc?ref=v0.1.0"
   vpc_name   = "example"
+  igw_name   = "example-IGW"
   subnets = {
-    public-1a  = { cidr = "10.0.0.0/24", az = "eu-north-1a", route_table = "public" },
-    public-1b  = { cidr = "10.0.1.0/24", az = "eu-north-1b", route_table = "public" },
-    private-1a = { cidr = "10.0.8.0/24", az = "eu-north-1a", route_table = "tgw" },
-    private-1b = { cidr = "10.0.99.0/24", az = "eu-north-1b", route_table = "private" }
-    tgw-1a     = { cidr = "10.0.18.0/24", az = "eu-north-1a", route_table = "tgw" },
-    tgw-1b     = { cidr = "10.0.19.0/24", az = "eu-north-1b", route_table = "tgw" },
-    mgmt-1a    = { cidr = "10.0.10.0/24", az = "eu-north-1a", route_table = "mgmt" },
-    mgmt-1b    = { cidr = "10.0.11.0/24", az = "eu-north-1b", route_table = "mgmt" },
+    Pub-a  = { cidr = "10.253.100.0/24", az = "eu-west-2a", route_table = "Public" },
+    Pub-b  = { cidr = "10.253.200.0/24", az = "eu-west-2b", route_table = "Public" },
+    Priv-a = { cidr = "10.253.11.0/24", az = "eu-west-2a", route_table = "Priv" },
+    Priv-b = { cidr = "10.253.12.0/24", az = "eu-west-2b", route_table = "Priv" },
+    TGW-a  = { cidr = "10.253.1.0/24", az = "eu-west-2a", route_table = "TGW" },
+    TGW-b  = { cidr = "10.253.2.0/24", az = "eu-west-2b", route_table = "TGW" },
+    Mgmt-a = { cidr = "10.253.110.0/24", az = "eu-west-2a", route_table = "Mgmt" },
+    Mgmt-b = { cidr = "10.253.120.0/24", az = "eu-west-2b", route_table = "Mgmt" }
   }
   security_groups = {
-    Public = [
-      { description = "https", protocol = "TCP", from_port = 443, to_port = 443, cidr_blocks = ["137.83.198.1/32"], type = "ingress" },
-      { description = "ssh", protocol = "TCP", from_port = 22, to_port = 22, cidr_blocks = ["137.83.198.1/32"], type = "ingress" },
-      { description = "esp", protocol = "UDP", from_port = 4501, to_port = 4501, cidr_blocks = ["10.0.0.0/16"], type = "ingress" },
+    Public-sg = [
+      { description = "https", protocol = "TCP", from_port = 443, to_port = 443, cidr_blocks = ["137.83.198.1/32", "90.254.209.65/32"], type = "ingress" },
+      { description = "ssh", protocol = "TCP", from_port = 22, to_port = 22, cidr_blocks = ["137.83.198.1/32", "90.254.209.65/32"], type = "ingress" },
       { description = "allow-all", protocol = -1, from_port = 0, to_port = 0, cidr_blocks = ["0.0.0.0/0"], type = "egress" }
+    ],
+    Priv-sg = [
+      { description = "allow-all", protocol = -1, from_port = 0, to_port = 0, cidr_blocks = ["0.0.0.0/0"], type = "egress" },
+      { description = "allow-all", protocol = -1, from_port = 0, to_port = 0, cidr_blocks = ["10.0.0.0/8"], type = "ingress" }
     ]
   }
-  public_rts = ["public"]
-  cidr_block = "10.0.0.0/16"
+  route_tables = {
+    "Public" = [
+      { destination_cidr = "0.0.0.0/0", target = "igw" }
+    ],
+    "Priv" = [
+      { destination_cidr = "10.0.0.0/8", target = "tgw" }
+    ],
+    "Mgmt" = [
+      { destination_cidr = "0.0.0.0/0", target = "igw" },
+      { destination_cidr = "192.168.100.0/24", target = "tgw" }
+    ]
+  }
+  tgw_vpc_attachment = {
+    tgw_id          = data.terraform_remote_state.tgw.outputs.tgws["TGW-MoJ"].id,
+    subnets         = ["security-TGW-a", "security-TGW-b"]
+    propagation_rtb = data.terraform_remote_state.tgw.outputs.tgw_rtbs["tgw-rtb-security"].id
+    association_rtb = data.terraform_remote_state.tgw.outputs.tgw_rtbs["tgw-rtb-security"].id
+  }
+  cidr_block = "10.253.0.0/16"
 }
 ```
 ## Providers
@@ -42,10 +63,11 @@ module "vpc" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | cidr\_block | cidr block for the vpc | `string` | n/a | yes |
-| public\_rts | list of public route tables by name | `list(string)` | `[]` | no |
 | subnets | Map of subnets to create in the vpc. | `map(any)` | n/a | yes |
+| security\_groups | Map of security groups to be later used with EC2 | `map(any)` | `{}` | no |
+| route\_tables | Map of route tables | `map(any)` | n/a | yes |
 | tags | Optional Tags to apply to all resources | `map(any)` | `{}` | no |
-| vpc\_tags | Optional Tags to apply to VPC | `map(any)` | `{}` | no |
+| tgw\_vpc\_attachment | Optional map if VPC need to be attached to a TGW | `map(any)` | `{}` | no |
 
 ## Outputs
 
@@ -54,4 +76,5 @@ module "vpc" {
 | route\_tables | Route table attributes |
 | subnets | Subnet attributes |
 | vpc | VPC attributes |
+| security\_groups | Security Group attributes |
 

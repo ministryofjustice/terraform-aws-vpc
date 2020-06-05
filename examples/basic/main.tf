@@ -3,8 +3,8 @@ provider "aws" {
 }
 
 module "vpc" {
-  source     = "../../"
-  cidr_block = var.cidr_block
-  subnets    = var.subnets
-  #  public_rts = var.public_rts
+  source       = "../../"
+  cidr_block   = var.cidr_block
+  subnets      = var.subnets
+  route_tables = var.route_tables
 }

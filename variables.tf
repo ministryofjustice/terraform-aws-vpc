@@ -16,12 +16,6 @@ variable "subnets" {
   type        = map(any)
 }
 
-# variable "public_rts" {
-#   description = "list of public route tables by name"
-#   type        = list(string)
-#   default     = []
-# }
-
 variable "route_tables" {
   description = "map of routes to create in the vpc"
   type        = map(any)
