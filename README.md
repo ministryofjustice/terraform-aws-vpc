@@ -45,7 +45,7 @@ module "vpc" {
   }
   tgw_vpc_attachment = {
     tgw_id          = data.terraform_remote_state.tgw.outputs.tgws["TGW-MoJ"].id,
-    subnets         = ["security-TGW-a", "security-TGW-b"]
+    subnets         = ["TGW-a", "TGW-b"]
     propagation_rtb = data.terraform_remote_state.tgw.outputs.tgw_rtbs["tgw-rtb-security"].id
     association_rtb = data.terraform_remote_state.tgw.outputs.tgw_rtbs["tgw-rtb-security"].id
   }
