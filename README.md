@@ -65,6 +65,7 @@ module "vpc" {
 | cidr\_block | cidr block for the vpc | `string` | n/a | yes |
 | subnets | Map of subnets to create in the vpc. | `map(any)` | n/a | yes |
 | security\_groups | Map of security groups to be later used with EC2 | `map(any)` | `{}` | no |
+| nat\_gateway | Map of NAT gateway parameters | `map(any)` | `{}` | no |
 | route\_tables | Map of route tables | `map(any)` | n/a | yes |
 | tags | Optional Tags to apply to all resources | `map(any)` | `{}` | no |
 | tgw\_vpc\_attachment | Optional map if VPC need to be attached to a TGW | `map(any)` | `{}` | no |

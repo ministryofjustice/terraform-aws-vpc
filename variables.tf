@@ -49,3 +49,8 @@ variable "tgw_vpc_attachment" {
   description = "Map of TGW VPC attachement parameters"
   default     = {}
 }
+
+variable "public_ipv4_pool" {
+  type    = string
+  default = "amazon"
+}
