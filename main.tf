@@ -64,7 +64,8 @@ resource "aws_eip" "nat_gw_eip" {
 }
 
 # Configure NAT GW if nat_gateway is specified  #### 
-resource "aws_nat_gateway" "natgw" {
+resource "aws_nat_gateway" "this" {
+  count         = length(var.nat_gateway) != 0 ? 1 : 0
   allocation_id = aws_eip.nat_gw_eip[0].id
   subnet_id     = aws_subnet.this[lookup(var.nat_gateway, "subnet")].id
 
@@ -81,11 +82,11 @@ resource "aws_route" "igw_rt" {
 }
 
 # Target type - natgw
-resource "aws_route" "igw_rt" {
+resource "aws_route" "natgw_rt" {
   for_each               = { for r in local.routes : "${r.rtb}-${r.destination_cidr}" => r if r.target == "natgw" }
   route_table_id         = aws_route_table.this[each.value.rtb].id
   destination_cidr_block = each.value.destination_cidr
-  nat_gateway_id         = aws_internet_gateway.this[0].id
+  nat_gateway_id         = aws_nat_gateway.this[0].id
 }
 
 # Target type - tgw
