@@ -54,3 +54,12 @@ variable "public_ipv4_pool" {
   type    = string
   default = "amazon"
 }
+
+variable "nat_gateway" {
+  description = "Map of NAT gateway parameters"
+  type = map(object({
+    name   = string
+    subnet = string
+  }))
+  default = {}
+}
