@@ -57,9 +57,6 @@ variable "public_ipv4_pool" {
 
 variable "nat_gateway" {
   description = "Map of NAT gateway parameters"
-  type = map(object({
-    name   = string
-    subnet = string
-  }))
-  default = {}
+  type        = map(any)
+  default     = {}
 }
