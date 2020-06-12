@@ -7,7 +7,7 @@ provider "aws" {
 }
 
 module "vpc" {
-  source     = "git::https://gitlab.com/public-tf-modules/terraform-aws-vpc?ref=v0.1.0"
+  source     = "git::https://github.com/ministryofjustice/terraform-aws-vpc?ref=v0.1.0"
   vpc_name   = "example"
   igw_name   = "example-IGW"
   subnets = {
