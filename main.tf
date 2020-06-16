@@ -69,6 +69,8 @@ resource "aws_nat_gateway" "this" {
   allocation_id = aws_eip.nat_gw_eip[0].id
   subnet_id     = aws_subnet.this[lookup(var.nat_gateway, "subnet")].id
 
+  tags = merge(var.tags, var.vpc_tags, { Name = var.nat_gateway.name })
+
   # NAT Gateway depends on the Internet Gateway for the VPC in which the NAT Gateway's subnet is located
   depends_on = [aws_internet_gateway.this, aws_subnet.this]
 }
