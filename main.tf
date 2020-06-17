@@ -61,6 +61,7 @@ resource "aws_eip" "nat_gw_eip" {
   count            = length(var.nat_gateway) != 0 ? 1 : 0
   vpc              = true
   public_ipv4_pool = var.public_ipv4_pool
+  tags             = merge(var.tags, var.vpc_tags, { Name = "${var.igw_name}-eip" })
 }
 
 # Configure NAT GW if nat_gateway is specified  #### 
