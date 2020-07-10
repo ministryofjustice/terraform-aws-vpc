@@ -22,7 +22,7 @@ resource "aws_subnet" "this" {
   vpc_id            = aws_vpc.this.id
 }
 
-# Create and associate Route tables#### 
+# Create and associate Route tables
 resource "aws_route_table" "this" {
   for_each = { for rt in var.subnets : rt.route_table => rt... }
   vpc_id   = aws_vpc.this.id
