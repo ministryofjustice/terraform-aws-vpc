@@ -28,6 +28,12 @@ variable "cidr_block" {
   type        = string
 }
 
+variable "secondary_cidr_blocks" {
+  description = "list of secondary cidr blocks to associate with the vpc"
+  type        = list(string)
+  default     = []
+}
+
 variable "vpc_tags" {
   description = "Optional Tags to apply to VPC"
   type        = map(any)

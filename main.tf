@@ -14,12 +14,21 @@ resource "aws_vpc" "this" {
   tags       = merge(var.tags, var.vpc_tags, { Name = var.vpc_name })
 }
 
+# Create secondary_cidr
+resource "aws_vpc_ipv4_cidr_block_association" "this" {
+  for_each   = { for cidr in var.secondary_cidr_blocks : cidr => cidr }
+  vpc_id     = aws_vpc.this.id
+  cidr_block = each.value
+}
+
 resource "aws_subnet" "this" {
   for_each          = var.subnets
   cidr_block        = each.value.cidr
   availability_zone = lookup(each.value, "az", null)
   tags              = merge(var.tags, lookup(each.value, "tags", {}), { Name = each.key })
   vpc_id            = aws_vpc.this.id
+
+  depends_on = [aws_vpc_ipv4_cidr_block_association.this]
 }
 
 # Create and associate Route tables
@@ -64,7 +73,7 @@ resource "aws_eip" "nat_gw_eip" {
   tags             = merge(var.tags, var.vpc_tags, { Name = "${var.igw_name}-eip" })
 }
 
-# Configure NAT GW if nat_gateway is specified  #### 
+# Configure NAT GW if nat_gateway is specified 
 resource "aws_nat_gateway" "this" {
   count         = length(var.nat_gateway) != 0 ? 1 : 0
   allocation_id = aws_eip.nat_gw_eip[0].id
