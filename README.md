@@ -50,6 +50,7 @@ module "vpc" {
     association_rtb = data.terraform_remote_state.tgw.outputs.tgw_rtbs["tgw-rtb-security"].id
   }
   cidr_block = "10.253.0.0/16"
+  secondary_cidr_blocks = ["172.16.0.0/16"]
 }
 ```
 ## Providers
