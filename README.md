@@ -64,6 +64,7 @@ module "vpc" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | cidr\_block | cidr block for the vpc | `string` | n/a | yes |
+| secondary\_cidr\_blocks | list of secondary cidr blocks for the vpc | `list(string)` | n/a | no |
 | subnets | Map of subnets to create in the vpc. | `map(any)` | n/a | yes |
 | security\_groups | Map of security groups to be later used with EC2 | `map(any)` | `{}` | no |
 | nat\_gateway | Map of NAT gateway parameters | `map(any)` | `{}` | no |
