@@ -10,6 +10,12 @@ variable "igw_name" {
   default     = ""
 }
 
+variable "vgw_name" {
+  description = "name of the vgw"
+  type        = string
+  default     = ""
+}
+
 
 variable "subnets" {
   description = "Map of subnets to create in the vpc."
