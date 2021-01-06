@@ -65,6 +65,13 @@ resource "aws_internet_gateway" "this" {
   tags   = merge(var.tags, var.vpc_tags, { Name = var.igw_name })
 }
 
+# Configure VGW if vgw_name is specified  #### 
+resource "aws_vpn_gateway" "this" {
+  count  = var.vgw_name != "" ? 1 : 0
+  vpc_id = aws_vpc.this.id
+  tags   = merge(var.tags, var.vpc_tags, { Name = var.vgw_name })
+}
+
 # Allocate an EIP for NAT GW
 resource "aws_eip" "nat_gw_eip" {
   count            = length(var.nat_gateway) != 0 ? 1 : 0
@@ -109,6 +116,14 @@ resource "aws_route" "tgw_rt" {
   transit_gateway_id     = var.tgw_vpc_attachment.tgw_id
 
   depends_on = [aws_ec2_transit_gateway_vpc_attachment.this]
+}
+
+# Target type - vgw
+resource "aws_route" "vgw_rt" {
+  for_each               = { for r in local.routes : "${r.rtb}-${r.destination_cidr}" => r if r.target == "vgw" }
+  route_table_id         = aws_route_table.this[each.value.rtb].id
+  destination_cidr_block = each.value.destination_cidr
+  gateway_id             = aws_vpn_gateway.this[0].id
 }
 
 # Security groups
