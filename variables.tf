@@ -16,6 +16,12 @@ variable "vgw_name" {
   default     = ""
 }
 
+variable "amazon_asn" { # Added 28 JAN - TL
+  description = "amazon side asn"
+  type        = string
+  default     = ""
+}
+
 
 variable "subnets" {
   description = "Map of subnets to create in the vpc."
