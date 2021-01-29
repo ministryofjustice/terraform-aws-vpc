@@ -24,8 +24,8 @@ variable "amazon_asn" {
 
 variable "private_virtual_interface" {
   description = "For future use"
-  type        = string
-  default     = ""
+  type        = map
+  default     = {}
 }
 
 variable "subnets" {
