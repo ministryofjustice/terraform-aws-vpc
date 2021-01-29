@@ -16,6 +16,11 @@ variable "vgw_name" {
   default     = ""
 }
 
+variable "amazon_asn" {
+  description = "The Autonomous System Number (ASN) for the Amazon side of the gateway"
+  type        = string
+  default     = ""
+}
 
 variable "subnets" {
   description = "Map of subnets to create in the vpc."
