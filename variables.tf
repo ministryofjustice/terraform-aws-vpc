@@ -22,6 +22,12 @@ variable "amazon_asn" {
   default     = ""
 }
 
+variable "private_virtual_interface" {
+  description = "For future use"
+  type        = string
+  default     = ""
+}
+
 variable "subnets" {
   description = "Map of subnets to create in the vpc."
   type        = map(any)
