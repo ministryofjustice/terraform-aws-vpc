@@ -67,17 +67,10 @@ resource "aws_internet_gateway" "this" {
 
 # Configure VGW if vgw_name is specified  #### 
 resource "aws_vpn_gateway" "this" {
-<<<<<<< HEAD
   count      = var.vgw_name != "" ? 1 : 0
   vpc_id     = aws_vpc.this.id
   amazon_asn = var.amazon_asn
   tags       = merge(var.tags, var.vpc_tags, { Name = var.vgw_name })
-=======
-  count           = var.vgw_name != "" ? 1 : 0
-  vpc_id          = aws_vpc.this.id
-  amazon_side_asn = var.amazon_asn # Added 28 JAN - TL 
-  tags            = merge(var.tags, var.vpc_tags, { Name = var.vgw_name })
->>>>>>> 88b52ed1151cffecca4ef519a4db6d09fac30ef0
 }
 
 # Allocate an EIP for NAT GW
