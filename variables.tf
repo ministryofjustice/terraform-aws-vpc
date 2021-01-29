@@ -22,8 +22,8 @@ variable "amazon_asn" {
   default     = ""
 }
 
-variable "private_virtual_interface" {
-  description = "For future use"
+variable "private_virtual_interfaces" {
+  description = "A map of private virtual interfaces"
   type        = map
   default     = {}
 }

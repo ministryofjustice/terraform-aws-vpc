@@ -73,6 +73,19 @@ resource "aws_vpn_gateway" "this" {
   tags            = merge(var.tags, var.vpc_tags, { Name = var.vgw_name })
 }
 
+# Configure private virtual interfaces
+resource "aws_dx_private_virtual_interface" "this" {
+  for_each         = var.private_virtual_interfaces
+  connection_id    = each.value.connection_id
+  name             = each.key
+  vlan             = each.value.vlan_id
+  address_family   = each.value.address_family
+  bgp_asn          = each.value.bgp_asn
+  bgp_auth_key     = each.value.bgp_auth_key
+  amazon_address   = each.value.amazon_address
+  customer_address = each.value.customer_address
+}
+
 # Allocate an EIP for NAT GW
 resource "aws_eip" "nat_gw_eip" {
   count            = length(var.nat_gateway) != 0 ? 1 : 0
