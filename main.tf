@@ -84,6 +84,7 @@ resource "aws_dx_private_virtual_interface" "this" {
   bgp_auth_key     = each.value.bgp_auth_key
   amazon_address   = each.value.amazon_address
   customer_address = each.value.customer_address
+  vpn_gateway_id   = aws_vpn_gateway.this.id
 
   depends_on = [aws_vpn_gateway.this]
 }
