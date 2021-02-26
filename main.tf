@@ -184,6 +184,9 @@ resource "aws_security_group" "this" {
   tags = merge(var.tags, var.vpc_tags, { Name = each.key })
 }
 
+resource "aws_default_security_group" "default" {
+}
+
 # TGW route table associations
 resource "aws_ec2_transit_gateway_route_table_association" "this" {
   count                          = lookup(var.tgw_vpc_attachment, "association_rtb", null) != null ? 1 : 0
