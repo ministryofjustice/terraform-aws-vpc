@@ -196,6 +196,7 @@ resource "aws_ec2_transit_gateway_route_table_association" "this" {
   transit_gateway_route_table_id = var.tgw_vpc_attachment.association_rtb
 }
 
+
 # TGW route table propagations
 resource "aws_ec2_transit_gateway_route_table_propagation" "this" {
   count                          = lookup(var.tgw_vpc_attachment, "propagation_rtb", null) != null ? 1 : 0
