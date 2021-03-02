@@ -185,8 +185,7 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_default_security_group" "default" {
-  ingress {}
-  egress {}
+
 }
 
 # TGW route table associations
