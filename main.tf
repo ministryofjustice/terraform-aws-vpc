@@ -184,6 +184,7 @@ resource "aws_security_group" "this" {
   tags = merge(var.tags, var.vpc_tags, { Name = each.key })
 }
 
+# Remove Default Security Groups
 resource "aws_default_security_group" "default" {
 
 }
