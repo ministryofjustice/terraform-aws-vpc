@@ -186,6 +186,7 @@ resource "aws_security_group" "this" {
 
 # Remove Default Security Group Rules
 resource "aws_default_security_group" "default" {
+  vpc_id   = aws_vpc.this.id
 
 }
 
