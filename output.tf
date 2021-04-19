@@ -17,3 +17,8 @@ output "security_groups" {
   description = "Security group attributes"
   value       = aws_security_group.this
 }
+
+output "tgw_vpc_attachment_id" {
+  description = "Transit Gateway VPC attachment ID"
+  value       = aws_ec2_transit_gateway_vpc_attachment.this[0].id
+}
