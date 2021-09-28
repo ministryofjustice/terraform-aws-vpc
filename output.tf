@@ -20,5 +20,5 @@ output "security_groups" {
 
 output "tgw_vpc_attachment_id" {
   description = "Transit Gateway VPC attachment ID"
-  value       = aws_ec2_transit_gateway_vpc_attachment.this[0].id
+  value       = length(aws_ec2_transit_gateway_vpc_attachment.this) == 0 ? null : aws_ec2_transit_gateway_vpc_attachment.this[0].id
 }
